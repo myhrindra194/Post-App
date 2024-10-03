@@ -3,7 +3,7 @@ import PostCard from "./PostCard";
 import { Pagination, PaginationItem, PaginationLink } from "reactstrap";
 
 
-export default function ListPost({name, goBack, goNext, currentPage}){
+export default function ListPost({name, goBack, goNext, goLast, goFirst, currentPage}){
     return (name.length === 0) ?
     <p className="text-center mt-5">No post found</p>:
     <div className="container">
@@ -25,13 +25,19 @@ export default function ListPost({name, goBack, goNext, currentPage}){
             <div className=" mt-5 d-flex justify-content-center">
                 <Pagination>
                     <PaginationItem>
-                    <PaginationLink href="#" previous onClick={goBack}/>
-                    </PaginationItem>
-                    <PaginationItem> 
-                    <PaginationLink href="#"> {currentPage} </PaginationLink>
+                        <PaginationLink first href="#" onClick={goFirst}/>
                     </PaginationItem>
                     <PaginationItem>
-                    <PaginationLink href="#" next onClick={goNext}/>
+                        <PaginationLink href="#" previous onClick={goBack}/>
+                    </PaginationItem>
+                    <PaginationItem> 
+                        <PaginationLink href="#"> {currentPage} </PaginationLink>
+                    </PaginationItem>
+                    <PaginationItem>
+                        <PaginationLink href="#" next onClick={goNext}/>
+                    </PaginationItem>
+                    <PaginationItem>
+                        <PaginationLink href="#" last onClick={goLast}/>
                     </PaginationItem>
                 </Pagination>
             </div>

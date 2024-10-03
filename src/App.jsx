@@ -38,7 +38,16 @@ function App(){
       setCurrentPage(currentPage + 1);
     }
   }
+  const handleClickFirst = () => {
+    setBeginIndex(0);
+    setCurrentPage(1);
+  }
 
+  const handleClickLast = () => {
+    setBeginIndex(res.length - itemPerPage);
+    setCurrentPage(Math.ceil(res.length / itemPerPage));
+
+  }
   const handleChangeInput = (e) => {
     setSearchWord(e.target.value);
     setBeginIndex(0);
@@ -50,6 +59,8 @@ function App(){
     setBeginIndex(0);
     setCurrentPage(1);
   }
+
+  
 
   return (
     <>
@@ -65,6 +76,8 @@ function App(){
           <ListPost 
             name={visiblePosts}
             currentPage={currentPage}
+            goFirst={handleClickFirst}
+            goLast={handleClickLast}
             goBack={handleClickPrev}
             goNext={handleClickNext}
           />
