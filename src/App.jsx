@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { filterList } from "./utils/script";
-import {URL} from "./utils/url";
+import { URL } from "./utils/url";
 import ListPost from "./components/ListPost";
 import SearchBar from "./components/SearchBar";
 import Loader from "./components/Loader";
@@ -11,7 +11,7 @@ function App(){
   const [posts, setPosts] = useState([]);
   const [searchWord, setSearchWord] = useState("");
   const [filterKey, setFilterKey] = useState("0");
-
+  
   useEffect(() => {
     fetch(URL)
     .then(response => response.json())
@@ -20,7 +20,25 @@ function App(){
   })
 
   const res = filterList(posts, searchWord, filterKey);
-  
+  const [currentPage, setCurrentPage] = useState(1);
+  const [beginIndex, setBeginIndex] = useState(0);
+  const itemPerPage = 4;
+
+  const visiblePosts = res.slice(beginIndex, beginIndex + itemPerPage);
+
+  const handleClickPrev = () => {
+    if(beginIndex > 0){
+      setBeginIndex(beginIndex - itemPerPage);
+      setCurrentPage(currentPage - 1);
+    }
+  }
+  const handleClickNext = () => {
+    if(beginIndex + itemPerPage < res.length){
+      setBeginIndex(beginIndex + itemPerPage);
+      setCurrentPage(currentPage + 1);
+    }
+  }
+
   return (
     <>
       <SearchBar
@@ -32,7 +50,12 @@ function App(){
       {
         (posts.length === 0) ? 
           <Loader /> :
-          <ListPost name={res}/>
+          <ListPost 
+            name={visiblePosts}
+            currentPage={currentPage}
+            goBack={handleClickPrev}
+            goNext={handleClickNext}
+          />
       }
     </>
   )
