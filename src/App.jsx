@@ -39,13 +39,25 @@ function App(){
     }
   }
 
+  const handleChangeInput = (e) => {
+    setSearchWord(e.target.value);
+    setBeginIndex(0);
+    setCurrentPage(1)
+  }
+  
+  const handleChangeFilterKey = (e) => {
+    setFilterKey(e.target.value);
+    setBeginIndex(0);
+    setCurrentPage(1);
+  }
+
   return (
     <>
       <SearchBar
         inputValue={searchWord}
-        onChangeInput={(e) => setSearchWord(e.target.value)}
+        onChangeInput={(e) => handleChangeInput(e)}
         selectValue={filterKey}
-        onChangeSelect={(e) => setFilterKey(e.target.value)}
+        onChangeSelect={(e) => handleChangeFilterKey(e)}
       />
       {
         (posts.length === 0) ? 
