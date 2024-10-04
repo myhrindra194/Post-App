@@ -17,12 +17,12 @@ export default function PostCard({id, title, stat, publishedAt, updatedAt, image
                         {stat} {publishedAt}
                         <br />Last updated {updatedAt}
                     </p>
-                    <Button onClick={handleClick}>{buttonText}</Button>
+                    <Button onClick={handleClick} className="mb-3">{buttonText}</Button>
                 </div>
                 <div className="col-sm-12 col-md-4">
                     <img src= {image} alt="Image" className="img-fluid"/>
                 </div>
-                {showed && <p className="mt-3">{content}</p>}
+                {showed && <p>{content}</p>}
             </div>
         </Card>
     )       

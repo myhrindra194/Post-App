@@ -1,66 +1,111 @@
-import { useEffect, useState } from "react";
+import { useEffect, useReducer} from "react";
 import { filterList } from "./utils/script";
 import { URL } from "./utils/url";
 import ListPost from "./components/ListPost";
 import SearchBar from "./components/SearchBar";
 import Loader from "./components/Loader";
 
+const initialPost = {
+  posts: [],
+  searchWord: "",
+  keyFilter: "0",
+  beginIndex: 0,
+  currentPage: 1,
+}
+
+const postReducer = (state, action) => {
+  switch(action.type){
+    case "settingPost":
+      return {
+        ...state,
+        posts: action.passingValue
+      }
+    case "searching":
+      return {
+        ...state,
+        searchWord: action.passingValue,
+        beginIndex : 0,
+        currentPage: 1
+      }
+    case "filtering":
+      return {
+        ...state,
+        filterKey: action.passingValue,
+        beginIndex: 0,
+        currentPage: 1
+      }
+    case "goFirstPage":
+      return {
+        ...state,
+        beginIndex: 0,
+        currentPage: 1
+      }
+    case "goLastPage":
+      return {
+        ...state,
+        beginIndex: action.passingValue,
+        currentPage: action.index,
+      }
+    case "goNextPage":
+      return {
+        ...state,
+        beginIndex: state.beginIndex + action.passingValue,
+        currentPage: state.currentPage + 1
+      }
+      case "goPrevPage":
+        return {
+          ...state,
+          beginIndex: state.beginIndex - action.passingValue,
+          currentPage: state.currentPage - 1
+        }
+    default: {
+      throw Error('Unknown action: ' + action.type);
+    }
+  }
+}
 
 function App(){
-   
-  const [posts, setPosts] = useState([]);
-  const [searchWord, setSearchWord] = useState("");
-  const [filterKey, setFilterKey] = useState("0");
-  
+
+  const [myPosts, dispatch] = useReducer(postReducer, initialPost);
+  const {posts, searchWord, filterKey, beginIndex, currentPage} = myPosts;
+  const itemPerPage = 4;
+
+
   useEffect(() => {
     fetch(URL)
     .then(response => response.json())
-    .then(posts =>  setPosts(posts))
+    .then(posts =>  dispatch(
+      {
+        type: "settingPost",
+        passingValue: posts
+      }
+    ))
     .catch(error => {console.error("Error while fetching data"), error})
   })
 
   const res = filterList(posts, searchWord, filterKey);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [beginIndex, setBeginIndex] = useState(0);
-  const itemPerPage = 4;
-
   const visiblePosts = res.slice(beginIndex, beginIndex + itemPerPage);
 
   const handleClickPrev = () => {
-    if(beginIndex > 0){
-      setBeginIndex(beginIndex - itemPerPage);
-      setCurrentPage(currentPage - 1);
-    }
+    if(beginIndex > 0)
+      dispatch({type: "goPrevPage", passingValue :itemPerPage})
   }
   const handleClickNext = () => {
     if(beginIndex + itemPerPage < res.length){
-      setBeginIndex(beginIndex + itemPerPage);
-      setCurrentPage(currentPage + 1);
+      dispatch({type: "goNextPage", passingValue: itemPerPage})
     }
   }
-  const handleClickFirst = () => {
-    setBeginIndex(0);
-    setCurrentPage(1);
-  }
+  const handleClickFirst = () => dispatch({type:"goFirsPage"})
 
   const handleClickLast = () => {
-    setBeginIndex(res.length - itemPerPage);
-    setCurrentPage(Math.ceil(res.length / itemPerPage));
-
-  }
-  const handleChangeInput = (e) => {
-    setSearchWord(e.target.value);
-    setBeginIndex(0);
-    setCurrentPage(1)
-  }
-  
-  const handleChangeFilterKey = (e) => {
-    setFilterKey(e.target.value);
-    setBeginIndex(0);
-    setCurrentPage(1);
+    const lastIndex = Math.ceil(res.length / itemPerPage)
+    dispatch({type:"goLastPage", passingValue: lastIndex, itemPerPage})
   }
 
+  const handleChangeInput = (e) => dispatch({type:"searching", passingValue: e.target.value})
   
+  const handleChangeFilterKey = (e) => dispatch({type: "filtering", passingValue: e.target.value})
+
 
   return (
     <>
