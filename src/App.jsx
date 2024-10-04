@@ -1,68 +1,11 @@
 import { useEffect, useReducer} from "react";
 import { filterList } from "./utils/script";
 import { URL } from "./utils/url";
+import { postReducer, initialPost } from "./utils/postReducer";
 import ListPost from "./components/ListPost";
 import SearchBar from "./components/SearchBar";
 import Loader from "./components/Loader";
 
-const initialPost = {
-  posts: [],
-  searchWord: "",
-  keyFilter: "0",
-  beginIndex: 0,
-  currentPage: 1,
-}
-
-const postReducer = (state, action) => {
-  switch(action.type){
-    case "settingPost":
-      return {
-        ...state,
-        posts: action.passingValue
-      }
-    case "searching":
-      return {
-        ...state,
-        searchWord: action.passingValue,
-        beginIndex : 0,
-        currentPage: 1
-      }
-    case "filtering":
-      return {
-        ...state,
-        filterKey: action.passingValue,
-        beginIndex: 0,
-        currentPage: 1
-      }
-    case "goFirstPage":
-      return {
-        ...state,
-        beginIndex: 0,
-        currentPage: 1
-      }
-    case "goLastPage":
-      return {
-        ...state,
-        beginIndex: action.passingValue,
-        currentPage: action.index,
-      }
-    case "goNextPage":
-      return {
-        ...state,
-        beginIndex: state.beginIndex + action.passingValue,
-        currentPage: state.currentPage + 1
-      }
-      case "goPrevPage":
-        return {
-          ...state,
-          beginIndex: state.beginIndex - action.passingValue,
-          currentPage: state.currentPage - 1
-        }
-    default: {
-      throw Error('Unknown action: ' + action.type);
-    }
-  }
-}
 
 function App(){
 
@@ -70,16 +13,10 @@ function App(){
   const {posts, searchWord, filterKey, beginIndex, currentPage} = myPosts;
   const itemPerPage = 4;
 
-
   useEffect(() => {
     fetch(URL)
     .then(response => response.json())
-    .then(posts =>  dispatch(
-      {
-        type: "settingPost",
-        passingValue: posts
-      }
-    ))
+    .then(posts =>  dispatch({type: "settingPost", passingValue: posts}))
     .catch(error => {console.error("Error while fetching data"), error})
   })
 
@@ -95,11 +32,11 @@ function App(){
       dispatch({type: "goNextPage", passingValue: itemPerPage})
     }
   }
-  const handleClickFirst = () => dispatch({type:"goFirsPage"})
+  const handleClickFirst = () => dispatch({type:"goFirstPage"})
 
   const handleClickLast = () => {
-    const lastIndex = Math.ceil(res.length / itemPerPage)
-    dispatch({type:"goLastPage", passingValue: lastIndex, itemPerPage})
+    const lastIndex = (Math.ceil(res.length / itemPerPage));
+    dispatch({type:"goLastPage", lastIndex: lastIndex, passingValue: itemPerPage })
   }
 
   const handleChangeInput = (e) => dispatch({type:"searching", passingValue: e.target.value})
