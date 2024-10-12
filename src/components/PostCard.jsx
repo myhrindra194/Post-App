@@ -4,9 +4,9 @@ import { Button, Card } from "reactstrap";
 
 export default function PostCard({id, title, stat, publishedAt, updatedAt, image, content}){
     const [showed, setShowed] = useState(false);
-    const buttonText = showed ? "Hide details" : "Show details";
+   
 
-    const handleClick = () => setShowed(!showed);
+    const handleClickShowed = () => setShowed(!showed);
 
     return( 
         <Card className="col-md-5 col-sm-10 mt-3">
@@ -17,7 +17,13 @@ export default function PostCard({id, title, stat, publishedAt, updatedAt, image
                         {stat} {publishedAt}
                         <br />Last updated {updatedAt}
                     </p>
-                    <Button onClick={handleClick} className="mb-3">{buttonText}</Button>
+                    <Button onClick={handleClickShowed} className="mb-3" color="light">
+                        {
+                            showed ?
+                            <i className="fas fa-caret-up"></i>:
+                            <i className="fas fa-caret-down"></i>
+                        }
+                    </Button>
                 </div>
                 <div className="col-sm-12 col-md-4">
                     <img src= {image} alt="Image" className="img-fluid"/>

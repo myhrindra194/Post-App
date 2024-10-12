@@ -16,32 +16,32 @@ function App(){
   useEffect(() => {
     fetch(URL)
     .then(response => response.json())
-    .then(posts =>  dispatch({type: "settingPost", passingValue: posts}))
+    .then(posts =>  dispatch({type: "settingPost", payload: posts}))
     .catch(error => {console.error("Error while fetching data"), error})
-  })
+  }, [])
 
   const res = filterList(posts, searchWord, filterKey);
   const visiblePosts = res.slice(beginIndex, beginIndex + itemPerPage);
 
   const handleClickPrev = () => {
     if(beginIndex > 0)
-      dispatch({type: "goPrevPage", passingValue :itemPerPage})
+      dispatch({type: "goPrevPage", payload :itemPerPage})
   }
   const handleClickNext = () => {
     if(beginIndex + itemPerPage < res.length){
-      dispatch({type: "goNextPage", passingValue: itemPerPage})
+      dispatch({type: "goNextPage", payload: itemPerPage})
     }
   }
   const handleClickFirst = () => dispatch({type:"goFirstPage"})
 
   const handleClickLast = () => {
     const lastIndex = (Math.ceil(res.length / itemPerPage));
-    dispatch({type:"goLastPage", lastIndex: lastIndex, passingValue: itemPerPage })
+    dispatch({type:"goLastPage", lastIndex: lastIndex, payload: itemPerPage })
   }
 
-  const handleChangeInput = (e) => dispatch({type:"searching", passingValue: e.target.value})
+  const handleChangeInput = (e) => dispatch({type:"searching", payload: e.target.value})
   
-  const handleChangeFilterKey = (e) => dispatch({type: "filtering", passingValue: e.target.value})
+  const handleChangeFilterKey = (e) => dispatch({type: "filtering", payload: e.target.value})
 
 
   return (

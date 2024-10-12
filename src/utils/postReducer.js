@@ -11,19 +11,19 @@ export const postReducer = (state, action) => {
       case "settingPost":
         return {
           ...state,
-          posts: action.passingValue
+          posts: action.payload
         }
       case "searching":
         return {
           ...state,
-          searchWord: action.passingValue,
+          searchWord: action.payload,
           beginIndex : 0,
           currentPage: 1
         }
       case "filtering":
         return {
           ...state,
-          filterKey: action.passingValue,
+          filterKey: action.payload,
           beginIndex: 0,
           currentPage: 1
         }
@@ -36,19 +36,19 @@ export const postReducer = (state, action) => {
       case "goLastPage":
         return {
           ...state,
-          beginIndex: state.posts.length - action.passingValue,
+          beginIndex: state.posts.length - action.payload,
           currentPage: action.lastIndex,
         }
       case "goNextPage":
         return {
           ...state,
-          beginIndex: state.beginIndex + action.passingValue,
+          beginIndex: state.beginIndex + action.payload,
           currentPage: state.currentPage + 1
         }
         case "goPrevPage":
           return {
             ...state,
-            beginIndex: state.beginIndex - action.passingValue,
+            beginIndex: state.beginIndex - action.payload,
             currentPage: state.currentPage - 1
           }
       default: {
